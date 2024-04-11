@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from ..models import ProgramaSeries, MaestroCintas, RegistroCalificacion
 from django.views.decorators.csrf import csrf_exempt
@@ -5,17 +6,17 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models import Value, CharField, F
 
-@csrf_exempt
+
 
 @csrf_exempt
 def filtrarBusqueda(request):
     if request.method == 'GET':
-        serie = request.GET.get('serie', '')
-        subtituloSerie = request.GET.get('subtituloSerie', '')
-        programa = request.GET.get('programa', '')
-        subtituloPrograma = request.GET.get('subtituloPrograma', '')
-        codigo_barras = request.GET.get('codigo_barras', '')
-        sinopsis = request.GET.get('sinopsis', '')
+        serie = request.GET.get('serie', '').lower()
+        subtituloSerie = request.GET.get('subtituloSerie', '').lower()
+        programa = request.GET.get('programa', '').lower()
+        subtituloPrograma = request.GET.get('subtituloPrograma', '').lower()
+        codigo_barras = request.GET.get('codigo_barras', '').lower()
+        sinopsis = request.GET.get('sinopsis', '').lower()
 
         # Inicializar cat_status con un valor predeterminado
         cat_status = None

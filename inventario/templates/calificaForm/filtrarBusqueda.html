@@ -4,7 +4,6 @@
 
 {% block Contenido %}
 
-{% comment %} <div class="card col-12 col-md-12 col-lg-12 col-xl-15 mt-3"> {% endcomment %}
 <div class="card col-12 col-md-12 col-lg-12 col-xl-23 mt-5">
     <div class="card-header text-center" style="background-color:#F1F7F8;">
         <strong>Filtrar Datos</strong>
@@ -78,10 +77,10 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12 mt-1">
+    <div class="col-md-12 mt-1" id="tablaContainer" style="display: none;">
         <div class="card-body mt-3">
             <div class="table-responsive"> <!-- Agregar esta clase -->
-              <table class="table table-hover" id="datatableFiltrado">
+              <table class="table table-striped" id="datatableFiltrado">
                 <!-- ... Código de la tabla ... -->
                 <thead>
                   <tr>
@@ -102,7 +101,9 @@
 </div>
  
 <script>
+
 $(document).ready(function() {
+
     const dataTable = $('#datatableFiltrado').DataTable({
         "columns": [
             { "data": "codigo_barras" },
@@ -113,11 +114,15 @@ $(document).ready(function() {
             { "data": "estatus" },
         ],
         ...len,
+
         "deferRender": true
     });
-    
+
 
     $('#btnBuscar').click(function() {
+        // Mostrar DataTable al hacer clic en el botón de búsqueda
+        $('#tablaContainer').show();
+        
         let serie = $("#serie").val();
         let subtituloSerie = $("#subtituloSerie").val();
         let programa = $("#programa").val();
@@ -146,13 +151,14 @@ $(document).ready(function() {
             }
         });
     });
+
     $('.input-filter').keypress(function(event) {
-        if (event.keyCode === 13) { // Código de tecla "Enter"
-            $('#btnBuscar').click(); // Simular clic en el botón de búsqueda
+        if (event.keyCode === 13) {
+            $('#btnBuscar').click();
         }
     });
 });
-    
+
 </script>
 
 
