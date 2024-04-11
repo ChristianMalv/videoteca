@@ -1,12 +1,9 @@
-
 from django.shortcuts import render
-from ..models import ProgramaSeries, MaestroCintas, RegistroCalificacion
+from..models import ProgramaSeries, MaestroCintas, RegistroCalificacion
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Q
-from django.db.models import Value, CharField, F
-
-
+from django.db.models import Value, CharField
 
 @csrf_exempt
 def filtrarBusqueda(request):
@@ -23,12 +20,12 @@ def filtrarBusqueda(request):
 
         # Filtrar ProgramaSeries
         resultados_programaseries = ProgramaSeries.objects.filter(
-            serie__icontains=serie,
-            subtituloSerie__icontains=subtituloSerie,
-            programa__icontains=programa,
-            subtituloPrograma__icontains=subtituloPrograma,
-            codigo_barras__video_cbarras__icontains=codigo_barras,
-            sinopsis__icontains=sinopsis
+            serie__unaccent__icontains=serie,
+            subtituloSerie__unaccent__icontains=subtituloSerie,
+            programa__unaccent__icontains=programa,
+            subtituloPrograma__unaccent__icontains=subtituloPrograma,
+            codigo_barras__video_cbarras__unaccent__icontains=codigo_barras,
+            sinopsis__unaccent__icontains=sinopsis
         )
 
         # Combinar resultados de ambas tablas
@@ -38,7 +35,6 @@ def filtrarBusqueda(request):
                 try:
                     maestro_cintas = MaestroCintas.objects.get(video_cbarras=resultado.codigo_barras_id)
                     cat_status = maestro_cintas.video_tipo
-                    print(cat_status)
 
                     data.append({
                         'codigo_barras': resultado.codigo_barras.video_cbarras,
@@ -53,18 +49,17 @@ def filtrarBusqueda(request):
         else:
             # Filtrar RegistroCalificacion si no hay resultados en ProgramaSeries
             resultados_registro_calificacion = RegistroCalificacion.objects.filter(
-                serie__icontains=serie,
-                programa__icontains=programa,
-                subtitulo_programa__icontains=subtituloPrograma,
-                codigo_barras__video_cbarras__icontains=codigo_barras,
-                sinopsis__icontains=sinopsis
+                serie__unaccent__icontains=serie,
+                programa__unaccent__icontains=programa,
+                subtitulo_programa__unaccent__icontains=subtituloPrograma,
+                codigo_barras__video_cbarras__unaccent__icontains=codigo_barras,
+                sinopsis__unaccent__icontains=sinopsis
             )
 
             for resultado in resultados_registro_calificacion:
                 try:
                     maestro_cintas = MaestroCintas.objects.get(video_cbarras=resultado.codigo_barras_id)
                     cat_status = maestro_cintas.video_tipo
-                    
 
                     data.append({
                         'codigo_barras': resultado.codigo_barras.video_cbarras,
@@ -80,5 +75,4 @@ def filtrarBusqueda(request):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'data': data}, safe=False)
         else:
-            
             return render(request, 'calificaForm/filtrarBusqueda.html', {'data': data})
